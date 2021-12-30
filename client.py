@@ -20,17 +20,20 @@ def send(client, msg):
 
 
 def start():
-    answer = input('Would you like to connect (yes/no)? ')
-    if answer.lower() != 'yes':
-        return
+   
+    name = input("Connected! Now Enter your name!: ")
+
 
     connection = connect()
+    msg = f"{name} has joined!"
+    send(connection, msg)
     while True:
         msg = input("Message (q for quit): ")
 
         if msg == 'q':
             break
-
+        
+        msg = f"{name}: {msg}"
         send(connection, msg)
 
     send(connection, DISCONNECT_MESSAGE)

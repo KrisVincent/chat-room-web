@@ -16,6 +16,7 @@ clients_lock = threading.Lock()
 
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} Connected")
+    
 
     try:
         connected = True
@@ -27,10 +28,13 @@ def handle_client(conn, addr):
             if msg == DISCONNECT_MESSAGE:
                 connected = False
 
-            print(f"[{addr}] {msg}")
+            print(f"{msg}")
             with clients_lock:
                 for c in clients:
                     c.sendall(f"[{addr}] {msg}".encode(FORMAT))
+
+            if conn in clients:
+                print("yes")
 
     finally:
         with clients_lock:
