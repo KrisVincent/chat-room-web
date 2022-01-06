@@ -1,0 +1,79 @@
+
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/login_page.css') }}">
+
+
+
+
+
+{% endblock %}
+
+
+{% block content %}
+<!-- Note that i just reused the login page html code to do the register form page  -->
+
+<div class="login-page">
+    <div class="form" >
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages%}
+            <script>
+                var messages = {{ messages | safe }};
+                for (var i=0; i<messages.length; i++) {
+                  alert(messages[i]);
+                }
+              </script>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    
+        <div class="header">
+            <h1>Register</h1>
+
+        </div>
+        <form class="login-form" action=""method = "post"  enctype="multipart/form-data">
+            <input type="text" placeholder="username" name = "username" required />
+            <input type="password" placeholder="password" name="password" id = "password"  required/>
+            <input type="password" placeholder="confirm password" name = "confirm_password" required />
+            <input type="text" placeholder="nickname" name = "nickname" required />
+            <input type="text" placeholder="email address" name = "email"/>
+            <input type="radio" name="gender" value="Male" checked> Male
+     
+            <input type="radio" name="gender" value="Female"> Female
+
+
+            <div class="header">
+                <h1>Your Image Pic</h1>
+    
+            </div>
+            <input type="file" id="input_3" name="image" data-imagevalidate="yes" data-file-accept="jpg, jpeg, png" data-file-maxsize="102400" data-file-minsize="0" data-file-limit="0" >
+
+            <button>create</button>
+            <p class="message">Already registered? <a href="#">Sign In</a></p>
+            
+    
+        </form>
+      
+    </div>
+  </div>
+
+<script>
+
+$('#password, #confirm_password').on('keyup', function () {
+  if ($('#password').val() == $('#confirm_password').val()) {
+    $('#message').html('Matching').css('color', 'green');
+  } else 
+    $('#message').html('Not Matching').css('color', 'red');
+});
+
+</script>
+
+
+
+
+
+
+
+{% endblock %}

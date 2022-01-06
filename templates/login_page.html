@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/login_page.css') }}">
+
+
+
+
+
+{% endblock %}
+
+
+{% block content %}
+<div class="login-page">
+    <div class="form" >
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages%}
+            <script>
+                var messages = {{ messages | safe }};
+                for (var i=0; i<messages.length; i++) {
+                  alert(messages[i]);
+                }
+              </script>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+      
+      <form class="login-form" action="" method="post" enctype="multipart/form-data">
+        <input type="text" placeholder="username" name = "username" />
+        <input type="password" placeholder="password" name = "password"/>
+        
+        <button>login</button>
+        <p class="message">Not registered? <a href="register">Create an account</a></p>
+
+      </form>
+      
+    </div>
+  </div>
+
+{% endblock %}
