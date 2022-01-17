@@ -1,4 +1,5 @@
-import user
+from datetime import datetime
 
-chatter = user.Chatter(5050,"localhost")
-chatter.start()
+now = datetime.now()
+dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+print("date and time =", dt_string)	

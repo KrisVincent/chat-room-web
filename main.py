@@ -17,6 +17,12 @@ socketio = SocketIO( app )
 @app.route("/", methods = ["POST","GET"])
 def login_page():
 
+    if "username" in session:
+
+        return redirect(url_for("chat_page"))
+
+
+
     #if user presses login button
     if request.method == "POST":
         
@@ -136,7 +142,7 @@ def handle_my_custom_event( json ):
   # dd/mm/YY H:M:S
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
   
-
+  #this is used to get client's data
   user = account.query.filter_by(client_id = client_id).first()
 
 
@@ -147,13 +153,13 @@ def handle_my_custom_event( json ):
   "message": json["message"],
   "date" : dt_string
    }   
-
+ 
 
   #insert message data
   message_data(client_id,json["message"],session["nickname"])
   
- 
-  send(msg_data)
+  #this is for the live data and pass the msg_data dictionary
+  socketio.emit( 'live_chat', msg_data)
 
 
 

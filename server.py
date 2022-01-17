@@ -1,6 +1,6 @@
 import threading
 import socket
-import io
+import flask_socketio
 
 class Server:
 

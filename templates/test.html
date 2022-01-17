@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Python Chat App Yo</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/css/chat_room.css') }}">
+                                          
+    <style>
+      .img-circle {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+    </style>
+
+
+  </head>
+  <body>
+    <div class="panel-body">
+      <ul class="chat" id = "live">
+            <li class="right clearfix"><span class="chat-img pull-right">
+                            <img src="ganyu.jpg" alt="Avatar" class="img-circle" /></span>
+                            <div class="chat-body clearfix">
+                                <div class="header">
+                                    <small class=" text-muted"><span class="glyphicon glyphicon-time"></span>13 mins ago</small>
+                                    <strong class="pull-right primary-font">Bhaumik Patel</strong>
+                                </div>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare
+                                    dolor, quis ullamcorper ligula sodales.
+                                </p>
+                            </div>
+                        </li>
+
+      
+      </ul>
+      
+     </div>
+  </body>
+</html>
