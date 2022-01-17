@@ -2,10 +2,16 @@ import io
 from logging import info
 from flask import Flask, redirect, url_for, render_template,session, flash, request
 import flask
+from sqlalchemy import *
 from flask.helpers import flash
-from database import account, db,app
+from flask_socketio import SocketIO, send
+from database import account,messages, db,app
+from datetime import datetime
 import PIL.Image as Image
 
+
+
+socketio = SocketIO( app )
 
 #this function is the index of the web app which is login page
 @app.route("/", methods = ["POST","GET"])
@@ -21,12 +27,15 @@ def login_page():
         #check if username exists and password entered is correct
         user_exists = check_login(get_username,get_password)
 
+        #this just checks if user exists or not
         if user_exists:
             
 
             flash(f"login successfully! welcome {get_username}","info")
-
-            return redirect(url_for("login_page"))
+            session["nickname"] = user_exists.client_nickname
+            session["username"] = user_exists.client_username
+           
+            return redirect(url_for("chat_page"))
 
         else:
 
@@ -37,10 +46,9 @@ def login_page():
 
     return render_template("login_page.html")
 
+#this function is responsible for the registration page
 @app.route("/register", methods = ["POST","GET"])
 def register_page():
-
-
 
     if request.method == "POST":
         try:
@@ -98,7 +106,87 @@ def register_page():
 
     return render_template("register_page.html")
 
-#This function is responsible for inserting registration data into the data base
+
+@app.route( '/chat-room', methods = ["POST","GET"] )
+def chat_page():
+
+    #this will get all the message from the database
+    message_list = messages.query.order_by(messages.message_id)
+
+    
+    print(message_list)
+    #redirect if user is not in session
+    if "nickname" not in session:
+        return redirect(url_for("login_page"))
+  
+    
+    return render_template( 'chat_room.html' ,msg = message_list)
+
+
+
+@socketio.on( 'handle_msgs' )
+def handle_my_custom_event( json ):
+
+  #get client_id for message data insertion
+  client_id = get_client_id(session["username"])
+  now = datetime.now()
+ 
+
+
+  # dd/mm/YY H:M:S
+  dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+  
+
+  user = account.query.filter_by(client_id = client_id).first()
+
+
+  #store data in a dictionary
+  msg_data = {
+  "nickname": user.client_nickname,
+  "image": user.client_image,
+  "message": json["message"],
+  "date" : dt_string
+   }   
+
+
+  #insert message data
+  message_data(client_id,json["message"],session["nickname"])
+  
+ 
+  send(msg_data)
+
+
+
+
+
+
+#the following code below are the all database functions
+
+def message_data(client_id,message,nickname):
+    
+    now = datetime.now()
+   
+    user = messages(
+                    client_id,
+                    message,
+                    nickname,
+                    now
+    )
+   
+    db.session.add(user)
+
+    db.session.commit()
+
+
+def get_client_id(username):
+    user_exists = account.query.filter_by(client_username = username).first()
+
+    if user_exists:
+        return user_exists.client_id
+    else:
+        return False
+
+#This function is responsible for inserting registration data into the database
 def insert_account_data(username,password,nickname,email,gender,image):
     
     #store our data
@@ -135,7 +223,7 @@ def insert_account_data(username,password,nickname,email,gender,image):
 #this checks if the user login data matches with any of our data in database
 def check_login(username, password):
 
-
+    #this part checks whether or not username being registered exists  
     user_exists = account.query.filter_by(client_username = username).first()
 
     if user_exists:
@@ -150,6 +238,8 @@ def check_login(username, password):
     return False
 
 if __name__ == "__main__":
-     app.run(debug=True) # for bugs and testing purposes
-     db.create_all() # create database model
+    
+    socketio.run( app, debug = True )
+    db.create_all() # create database model
+    
      
