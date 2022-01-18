@@ -1,10 +1,11 @@
 from datetime import timedelta
+import os
 from flask import Flask
 
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = "y@m3T32"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'DATABASE_URL'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=15)
 db = SQLAlchemy(app)
