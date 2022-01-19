@@ -5,7 +5,7 @@ import flask
 from sqlalchemy import *
 from flask.helpers import flash
 from flask_socketio import SocketIO, send
-frtoom database import account,messages, db,app
+from database import account,messages, db,app
 from datetime import datetime
 import PIL.Image as Image
 
@@ -103,6 +103,7 @@ def register_page():
 
             return redirect(url_for("register_page"))
 
+        #if succesful go back to login page
         flash("Registration succesful!", "info")
         return redirect(url_for("login_page"))
 
@@ -113,6 +114,7 @@ def register_page():
     return render_template("register_page.html")
 
 
+#the chat room itself
 @app.route( '/chat-room', methods = ["POST","GET"] )
 def chat_page():
 
@@ -129,6 +131,9 @@ def chat_page():
     return render_template( 'chat_room.html' ,msg = message_list)
 
 
+#socket.on is basically searching for a specific signal in the case below
+#it is searching for a handle_msgs signal or event
+#socket.emit is producing the signals
 
 @socketio.on( 'handle_msgs' )
 def handle_my_custom_event( json ):
