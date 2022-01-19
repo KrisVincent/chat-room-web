@@ -4,7 +4,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = "y@m3T32"
+<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat_app.sqlite3'
+=======
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://kqdnjldtzrsfhr:d29c453745d28478d088ba4487ce4e095ab61fd3be1a89ff04eb020db3cb8ca0@ec2-34-230-198-12.compute-1.amazonaws.com:5432/dckninmla9hluj"
+>>>>>>> 29e4ddb039086b35d8f4b2b770239cf1072d5fbb
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.permanent_session_lifetime = timedelta(minutes=15)
 db = SQLAlchemy(app)
