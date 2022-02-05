@@ -23,39 +23,36 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <span class="glyphicon glyphicon-comment"></span> Chat
-                        <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <div class="dropdown">
+                            <button type="button" class="dropbtn" data-toggle="dropdown">
                                 <span class="glyphicon glyphicon-chevron-down"></span>
                             </button>
-                            <ul class="dropdown-menu slidedown">
-                                <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-refresh">
-                                </span>Refresh</a></li>
-                                <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-ok-sign">
-                                </span>Available</a></li>
-                                <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-remove">
-                                </span>Busy</a></li>
-                                <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-time"></span>
-                                    Away</a></li>
-                                <li class="divider"></li>
-                                <li><a href="http://www.jquery2dotnet.com"><span class="glyphicon glyphicon-off"></span>
-                                    Sign Out</a></li>
-                            </ul>
+                            <div class="dropdown-content">
+                                    <a href="logout"><span class="glyphicon glyphicon-log-out">
+                                    </span> Log Out</a>
+                                </div>
+                            </div>        
                         </div>
+
+
+
+
+
                     </div>
                     <div class="panel-body">
                         <ul class="chat" id = "live">
                             
-                            {% for msg in msg %}
+                            {% for i in range(0,len) %}
                             <li class="left clearfix"><span class="chat-img pull-left">
-                                <img src="{{ url_for('static', filename='images/ganyu.jpg') }}" alt="User Avatar" class="img-circle" />
+                                <img src="data:image/png;base64,{{image[i]}}" alt="User Avatar" class="img-circle" />
                             </span>
                                 <div class="chat-body clearfix">
                                     <div class="header">
-                                        <strong class="primary-font">{{msg.nickname}}</strong> <small class="pull-right text-muted">
-                                            <span class="glyphicon glyphicon-time"></span>{{msg.date}}</small>
+                                        <strong class="primary-font">{{nickname[i]}}</strong> <small class="pull-right text-muted">
+                                            <span class="glyphicon glyphicon-time"></span>{{date[i]}}</small>
                                     </div>
                                     <p>
-                                        {{msg.message_content}}
+                                        {{message[i]}}
                                     </p>
                                 </div>
                             </li>
@@ -83,6 +80,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
 <script>
+    window.addEventListener('beforeunload', function (e) {
+            
+            socket.emit('forceDisconnect');
+        });
       var socket = io.connect( 'http://' + document.domain + ':' + location.port )
       // broadcast a message
       console.log(document.domain,location.port)
@@ -101,9 +102,21 @@
           $( 'input.message' ).val( '' ).focus()
         } )
         socket.on('disconnect', function(){
-            console.log("yamete")
+            socket.emit('forceDisconnect');
+
+            
             });
 
+           
+        socket.on('first_time', function(data){
+            
+            socket.emit( 'handle_msgs', {
+            
+                message :data
+              } )
+
+
+        });
         socket.on( 'live_chat', function(data) {
 
             //the following code is used for converting bytes array to base 64 

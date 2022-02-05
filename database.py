@@ -42,4 +42,5 @@ class messages(db.Model):
         self.message_content = message_content 
         self.nickname = nickname
         self.date = date
-        
+
+
